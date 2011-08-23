@@ -1,0 +1,13 @@
+0.2
+  Complete rewrite. Now parses lisp directly, instead of using the
+  shlex tokenizer.
+
+  Didn't allow escape sequences for newline/tab/etc. in strings.
+  Thanks to Paul Jimenez for pointing this out.
+
+0.1.1
+  Fixed a bug in writelisp() which caused complex
+  numbers to be converted into strings.
+
+0.1
+  Initial release
