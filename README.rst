@@ -55,4 +55,4 @@ read?  It can't return '' or None, since the expression may well be
 one of these two. Should it raise an exception?
 
 
-Ole Martin Bjørndalen - ombdalen@gmail.com - http://nerdly.info/ole/
+Ole Martin Bjørndalen - ombdalen@gmail.com

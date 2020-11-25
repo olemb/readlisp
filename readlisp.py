@@ -1,17 +1,17 @@
 """
-readlisp 0.2 - a lisp parser
+readlisp 0.2.1 - a lisp parser
 
 Ole Martin Bjorndalen
 ombdalen@gmail.com
-http://nerdly.info/ole/
+https://github.com/olemb/readlisp/
 
 License: MIT
 
-2006-12-21
+2020-11-26
 """
-
-import StringIO
+import sys
 import types
+from io import StringIO
 
 EOF = ''
 END_PAREN = ')'
@@ -29,8 +29,8 @@ class CharFile:
         else:
             self.c = ''
             c = self.file.read(1)
-            # print [c]
-            return c
+            # print([c])
+            return(c)
 
     def ungetchar(self, c):
         self.c = c
@@ -53,7 +53,7 @@ class LispReader:
 
     def _skip_whitespace(self):
         """Read until next non-whitespace or EOF"""
-        while 1:
+        while True:
             c = self.file.getchar()
             if c == EOF or c not in self.whitespace:
                 self.file.ungetchar(c)
@@ -61,7 +61,7 @@ class LispReader:
 
     def _skip_comment(self):
         """Read until EOL or EOF"""
-        while 1:
+        while True:
             c = self.file.getchar()
             if c == '\n' or c == EOF:
                 return
@@ -80,7 +80,7 @@ class LispReader:
         """Read a symbol or number"""
         atom = ''
 
-        while 1:
+        while True:
             c = self.file.getchar()
             if c in self.atom_end or c == EOF:
                 self.file.ungetchar(c)
@@ -92,7 +92,7 @@ class LispReader:
     def _read_string(self):
         string = ''
         
-        while 1:
+        while True:
             c = self.file.getchar()
 
             if c == '':
@@ -110,7 +110,7 @@ class LispReader:
 
     def _read_list(self):        
         items = []
-        while 1:
+        while True:
             item = self._read_expr()
             if item is END_PAREN:
                 break
@@ -120,7 +120,7 @@ class LispReader:
 
     def _read_expr(self):
 
-        while 1:
+        while True:
             self._skip_whitespace()
 
             c = self.file.getchar()
@@ -142,7 +142,7 @@ class LispReader:
                 return self._read_atom()
 
     def __iter__(self):
-        while 1:
+        while True:
             try:
                 yield self._read_expr()
             except EOFError:
@@ -153,7 +153,7 @@ def writelisp(obj):
     """Convert a python object into an equivalent lisp expression."""
 
     if type(obj) is types.ListType:
-	return '(%s)' % ' '.join(map(writelisp, obj))
+        return '(%s)' % ' '.join(map(writelisp, obj))
     elif type(obj) is types.StringType:
         out = '"'
         for c in obj:
@@ -165,16 +165,18 @@ def writelisp(obj):
     elif type(obj) in [types.LongType, types.IntType]:
         return str(obj)
     elif type(obj) is types.ComplexType:
-	return '#C(%s %s)' % (obj.real, obj.imag)
+        return '#C(%s %s)' % (obj.real, obj.imag)
     elif obj == None:
-	return 'nil'
+        return 'nil'
     else:
-	return repr(obj)
+        return repr(obj)
+
 
 def readlisp(text):
     """Read the first lisp expression in the string"""
-    return LispReader(StringIO.StringIO(text))._read_expr()
+    return LispReader(StringIO(text))._read_expr()
+
 
 if __name__ == '__main__':
-    p = LispReader(open('test.lisp'))
-    print repr(p._read_expr())
+    p = LispReader(sys.stdin)
+    print(repr(p._read_expr()))
