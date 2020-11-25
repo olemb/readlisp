@@ -1,3 +1,12 @@
+0.2.2 - 2020-11-25
+  Added limited support for quoted symbols. (Reported by Ben Crowell,
+  issue #2.) Now works for "(a |b|)". Support for "(a :|b|)" and "(a '|b|)"
+  will require some more thought. 
+
+  Added comparison for LispSymbol objects.
+
+  Added some tests.
+
 0.2.1 - 2020-11-25
   Now works with Python 3. Also, Python 2 support is dropped.
 

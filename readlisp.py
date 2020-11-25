@@ -40,10 +40,13 @@ class LispSymbol:
         self.name = name
 
     def __repr__(self):
-        return 'LispSymbol(%s)' % repr(self.name)
+        return 'LispSymbol({})'.format(self.name)
 
     def __str__(self):
         return self.name
+
+    def __eq__(self, other):
+        return isinstance(other, LispSymbol) and self.name == other.name
 
 class LispReader:
     def __init__(self, file):
@@ -118,6 +121,19 @@ class LispReader:
                 items.append(item)
         return items
 
+    def _read_quoted_symbol(self):
+        string = ''
+
+        while True:
+            c = self.file.getchar()
+            
+            if c == '':
+                raise EOFError('Missing | in quoted symbol')
+            elif c == '|':
+                return LispSymbol(string)
+            else:
+                string += c
+
     def _read_expr(self):
 
         while True:
@@ -135,8 +151,8 @@ class LispReader:
                 return END_PAREN
             elif c == '"':
                 return self._read_string()
-            #elif c == '|':
-            #    return self.read_quoted_symbol()
+            elif c == '|':
+                return self._read_quoted_symbol()
             else:
                 self.file.ungetchar(c)
                 return self._read_atom()
@@ -153,7 +169,7 @@ def writelisp(obj):
     """Convert a python object into an equivalent lisp expression."""
 
     if type(obj) is types.ListType:
-        return '(%s)' % ' '.join(map(writelisp, obj))
+        return '({})'.format(' '.join(map(writelisp, obj)))
     elif type(obj) is types.StringType:
         out = '"'
         for c in obj:
@@ -165,7 +181,7 @@ def writelisp(obj):
     elif type(obj) in [types.LongType, types.IntType]:
         return str(obj)
     elif type(obj) is types.ComplexType:
-        return '#C(%s %s)' % (obj.real, obj.imag)
+        return '#C({} {})'.format(obj.real, obj.imag)
     elif obj == None:
         return 'nil'
     else:
