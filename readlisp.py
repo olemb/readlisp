@@ -94,7 +94,7 @@ class LispReader:
 
     def _read_string(self):
         string = ''
-        
+
         while True:
             c = self.file.getchar()
 
@@ -111,7 +111,7 @@ class LispReader:
             else:
                 string += c
 
-    def _read_list(self):        
+    def _read_list(self):
         items = []
         while True:
             item = self._read_expr()
@@ -126,7 +126,7 @@ class LispReader:
 
         while True:
             c = self.file.getchar()
-            
+
             if c == '':
                 raise EOFError('Missing | in quoted symbol')
             elif c == '|':
